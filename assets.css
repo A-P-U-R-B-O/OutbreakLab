@@ -1,0 +1,135 @@
+/* OutbreakLab Custom CSS */
+/* Make Streamlit & matplotlib output visually striking, modern, and user-friendly */
+
+body, .stApp {
+    background: linear-gradient(135deg, #f1f7ff 0%, #e0ecff 100%);
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    color: #183153;
+}
+
+h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+    font-family: 'Poppins', 'Segoe UI', 'Arial', sans-serif;
+    font-weight: 700;
+    color: #1842a0;
+    letter-spacing: 0.02em;
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    text-shadow: 0 2px 10px #d3e0ff66;
+}
+
+.stButton>button {
+    background: linear-gradient(90deg, #2979ff 0%, #00b8d9 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 0.7em 2em;
+    transition: box-shadow 0.2s, background 0.2s;
+    box-shadow: 0 2px 10px #b9e0ff44;
+}
+.stButton>button:hover {
+    background: linear-gradient(90deg, #1842a0 0%, #00b8d9 100%);
+    box-shadow: 0 4px 18px #a0d2ff77;
+}
+
+.stTextInput>div>input, .stNumberInput>div>input {
+    border-radius: 7px;
+    border: 1.5px solid #b6cdf7;
+    background: #f9fbff;
+    padding: 0.5em;
+    font-size: 1.05em;
+    margin-bottom: 0.4em;
+    transition: border 0.2s;
+}
+.stTextInput>div>input:focus, .stNumberInput>div>input:focus {
+    border-color: #2979ff;
+    background: #e7f2ff;
+}
+
+.stSlider>div>div>div {
+    background: linear-gradient(90deg, #2979ff 0%, #00b8d9 100%) !important;
+}
+
+.stSelectbox>div>div>div {
+    border-radius: 7px !important;
+    border: 1.5px solid #b6cdf7 !important;
+    background: #f8fbff !important;
+}
+
+.stAlert, .stError, .stWarning, .stInfo, .stSuccess {
+    border-radius: 10px;
+    border-left: 5px solid #2979ff;
+    background: #f0f7ff;
+    color: #1842a0;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #b6cdf7;
+    margin: 2em 0;
+}
+
+a {
+    color: #2979ff;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+a:hover {
+    color: #00b8d9;
+    text-decoration: underline;
+}
+
+/* Custom card-like container for main panels */
+.outbreaklab-card {
+    background: #ffffffcc;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px #b9e0ff22;
+    padding: 2em 2em 2em 2em;
+    margin-bottom: 2em;
+    border: 1.5px solid #e0ecff;
+    transition: box-shadow 0.2s;
+}
+.outbreaklab-card:hover {
+    box-shadow: 0 10px 40px #2979ff22;
+}
+
+/* Modern table style */
+table {
+    border-radius: 10px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #f7fbff;
+}
+th, td {
+    padding: 0.7em 1em;
+    border-bottom: 1px solid #e1ecff;
+}
+th {
+    background: #e0ecff;
+    color: #1842a0;
+    font-weight: 600;
+}
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Plot area: for matplotlib/streamlit images */
+img, .element-container img {
+    border-radius: 12px;
+    box-shadow: 0 2px 16px #b9e0ff33;
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+    background: #f6faff;
+}
+
+/* Responsive paddings */
+@media (max-width: 600px) {
+    .outbreaklab-card {
+        padding: 1em 0.5em;
+    }
+    h1, h2, h3 {
+        font-size: 1.1em !important;
+    }
+  }
