@@ -1,0 +1,6 @@
+streamlit
+matplotlib
+numpy
+pytest
+# Optional: for additional features/extensions
+pandas
