@@ -4,10 +4,12 @@ import numpy as np
 import io
 import os
 from pathlib import Path
-from src.config import DEFAULTS, APP_TITLE, APP_DESCRIPTION, APP_ICON
-from src.sir_model import run_sir_simulation, run_seir_simulation, get_epidemic_metrics
-from src.visualization import plot_sir, plot_seir, plot_epidemic_metrics
-from src.utils import validate_parameters, to_int, to_float
+
+# Fixed imports: remove 'src.' prefix for local modules in src/
+from config import DEFAULTS, APP_TITLE, APP_DESCRIPTION, APP_ICON
+from sir_model import run_sir_simulation, run_seir_simulation, get_epidemic_metrics
+from visualization import plot_sir, plot_seir, plot_epidemic_metrics
+from utils import validate_parameters, to_int, to_float
 
 ### --- Custom CSS Loading ---
 def load_custom_css():
@@ -72,7 +74,7 @@ def parse_csv(uploaded_file):
             required_cols.add("exposed")
         if not required_cols.issubset(set(df.columns)):
             st.error(f"CSV must contain columns: {', '.join(required_cols)}")
-            return None
+            return None, None
         N = int(df.iloc[0][list(required_cols)].sum())
         days = len(df) - 1
         # Prepare params for simulation
@@ -273,4 +275,4 @@ st.markdown(
     </div>
     """,
     unsafe_allow_html=True
-)
+            )
