@@ -1,6 +1,3 @@
-/* OutbreakLab Custom CSS */
-/* Make Streamlit & matplotlib output visually striking, modern, and user-friendly */
-
 body, .stApp {
     background: linear-gradient(135deg, #f1f7ff 0%, #e0ecff 100%);
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
