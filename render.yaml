@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: outbreaklab-app
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run src/app.py --server.port $PORT
+    envVars:
+      - key: STREAMLIT_SERVER_HEADLESS
+        value: "true"
+      - key: STREAMLIT_SERVER_PORT
+        value: "$PORT"
+      - key: STREAMLIT_SERVER_ENABLECORS
+        value: "false"
+      - key: STREAMLIT_THEME_BASE
+        value: "light"
+    autoDeploy: true
+    runtime: python3
+
+# Optional: Mount assets for static files (if needed)
+# staticPublishPath: assets
