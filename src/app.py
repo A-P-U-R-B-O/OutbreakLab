@@ -49,11 +49,23 @@ st.markdown(f"## {APP_ICON} OutbreakLab: Interactive Epidemic Simulator")
 
 with st.expander("ℹ️ How to use", expanded=True):
     st.markdown("""
-    - **Set model parameters** or **upload your own CSV** (see [example](assets/example_data.csv)).
+    - **Set model parameters** or **upload your own CSV** (see example below).
     - Choose the **model type** and simulation options in the sidebar.
     - Click **Run Simulation** to view results, metrics, and plots.
     - Download data and figures for further analysis.
     """)
+    # Add a download button for the example CSV
+    example_csv_path = Path(__file__).parent.parent / "assets" / "example_data.csv"
+    if example_csv_path.exists():
+        with open(example_csv_path, "rb") as f:
+            st.download_button(
+                label="⬇️ Download example CSV",
+                data=f,
+                file_name="example_data.csv",
+                mime="text/csv"
+            )
+    else:
+        st.warning("Example CSV file not found.")
 
 st.markdown("---")
 
@@ -275,4 +287,4 @@ st.markdown(
     </div>
     """,
     unsafe_allow_html=True
-            )
+        )
