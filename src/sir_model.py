@@ -5,6 +5,7 @@ Advanced SIR and compartmental epidemic model simulation logic for OutbreakLab.
 Includes:
     - Classic SIR solver (Euler method)
     - Optional stochastic (random) SIR simulation
+    - Optional stochastic SEIR simulation
     - Support for additional compartments (e.g., SEIR, SIRS) via extension
     - Parameter validation and result packaging
 
@@ -76,7 +77,9 @@ def run_sir_simulation(
 def run_seir_simulation(
     S0: int, E0: int, I0: int, R0: int,
     beta: float, sigma: float, gamma: float,
-    N: int, days: int, dt: float = 1.0
+    N: int, days: int, dt: float = 1.0,
+    stochastic: bool = False,
+    seed: Optional[int] = None
 ) -> Dict[str, List[float]]:
     """
     Run an SEIR (Susceptible-Exposed-Infected-Recovered) model.
@@ -88,16 +91,29 @@ def run_seir_simulation(
         N: Population
         days: Number of days to simulate
         dt: Timestep (days)
+        stochastic: Whether to use a stochastic simulation (Gillespie-like)
+        seed: Optional random seed for reproducibility
     Returns:
         Dict with lists for S, E, I, R
     """
     steps = int(days / dt)
     S, E, I, R = [S0], [E0], [I0], [R0]
+    if stochastic and seed is not None:
+        np.random.seed(seed)
     for step in range(steps):
         s, e, i, r = S[-1], E[-1], I[-1], R[-1]
-        new_exposed = beta * s * i / N * dt
-        new_infected = sigma * e * dt
-        new_recovered = gamma * i * dt
+        if stochastic:
+            # Stochastic transitions (binomial sampling)
+            p_SE = 1 - np.exp(-beta * i / N * dt) if N > 0 else 0
+            p_EI = 1 - np.exp(-sigma * dt)
+            p_IR = 1 - np.exp(-gamma * dt)
+            new_exposed = np.random.binomial(int(s), p_SE)
+            new_infected = np.random.binomial(int(e), p_EI)
+            new_recovered = np.random.binomial(int(i), p_IR)
+        else:
+            new_exposed = beta * s * i / N * dt
+            new_infected = sigma * e * dt
+            new_recovered = gamma * i * dt
 
         s_new = max(s - new_exposed, 0)
         e_new = max(e + new_exposed - new_infected, 0)
@@ -140,4 +156,4 @@ def get_epidemic_metrics(S: List[float], I: List[float], R: List[float], dt: flo
         peak_day=peak_day,
         total_infected=total_infected,
         duration=duration
-    )
+        )
