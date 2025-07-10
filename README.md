@@ -122,7 +122,7 @@ Open an issue or PR for features, models, bugfixes, or improvements.
 - [GitHub](https://github.com/A-P-U-R-B-O/OutbreakLab)
 - Example data: [`assets/example_data.csv`](assets/example_data.csv)
 - Architecture: [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- **Live App:** [https://outbreaklab.onrender.com/](https://outbreaklab.streamlit.app/)
+- **Live App:** [https://outbreaklab.streamlit.app](https://outbreaklab.streamlit.app/)
 
 ---
 
