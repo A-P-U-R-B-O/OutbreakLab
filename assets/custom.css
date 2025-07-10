@@ -51,7 +51,7 @@ h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
 .stSelectbox>div>div>div {
     border-radius: 7px !important;
     border: 1.5px solid #B39DDB !important;
-    background: #F5F3FA !important;
+    background: #990000 !important;
 }
 
 .stAlert, .stError, .stWarning, .stInfo, .stSuccess {
