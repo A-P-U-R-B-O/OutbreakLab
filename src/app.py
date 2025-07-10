@@ -7,8 +7,8 @@ from pathlib import Path
 
 # Fixed imports: remove 'src.' prefix for local modules in src/
 from config import DEFAULTS, APP_TITLE, APP_DESCRIPTION, APP_ICON
-from sir_model import run_sir_simulation, run_seir_simulation, get_epidemic_metrics
-from visualization import plot_sir, plot_seir, plot_epidemic_metrics
+from sir_model import run_sir_simulation, run_seir_simulation, run_sirv_simulation, get_epidemic_metrics
+from visualization import plot_sir, plot_seir, plot_sirv, plot_epidemic_metrics
 from utils import validate_parameters, to_int, to_float
 
 ### --- Custom CSS Loading ---
@@ -29,7 +29,7 @@ st.sidebar.info(APP_DESCRIPTION)
 
 model_choice = st.sidebar.selectbox(
     "Choose epidemic model",
-    ["SIR", "SEIR"],
+    ["SIR", "SEIR", "SIRV"],
     help="Select which compartmental model to simulate."
 )
 
@@ -84,6 +84,8 @@ def parse_csv(uploaded_file):
         required_cols = {"susceptible", "infected", "recovered"}
         if model_choice == "SEIR":
             required_cols.add("exposed")
+        if model_choice == "SIRV":
+            required_cols.add("vaccinated")
         if not required_cols.issubset(set(df.columns)):
             st.error(f"CSV must contain columns: {', '.join(required_cols)}")
             return None, None
@@ -100,6 +102,8 @@ def parse_csv(uploaded_file):
         }
         if model_choice == "SEIR":
             params["E0"] = int(df["exposed"][0])
+        if model_choice == "SIRV":
+            params["V0"] = int(df["vaccinated"][0])
         return params, df
     except Exception as e:
         st.error(f"Failed to parse CSV: {e}")
@@ -125,8 +129,14 @@ else:
     if model_choice == "SEIR":
         with col4:
             E0 = st.number_input("Initially exposed (E₀)", min_value=0, max_value=N, value=DEFAULTS.get("E0", 0))
+        V0 = 0
+    elif model_choice == "SIRV":
+        with col4:
+            V0 = st.number_input("Initially vaccinated (V₀)", min_value=0, max_value=N, value=0)
+        E0 = 0
     else:
         E0 = 0
+        V0 = 0
 
     st.markdown("#### Model Parameters")
     col5, col6, col7, col8 = st.columns(4)
@@ -141,6 +151,10 @@ else:
         gamma = st.number_input("Recovery rate (γ)", min_value=0.0, max_value=2.0, value=DEFAULTS["gamma"], step=0.01)
     with col8:
         days = st.number_input("Simulation days", min_value=1, max_value=1000, value=DEFAULTS["days"])
+    if model_choice == "SIRV":
+        vac_rate = st.number_input("Vaccination rate (ν)", min_value=0.0, max_value=1.0, value=0.0, step=0.01)
+    else:
+        vac_rate = None
 
     params = dict(
         N=int(N), I0=int(I0), R0=int(R0), days=int(days),
@@ -149,6 +163,9 @@ else:
     if model_choice == "SEIR":
         params["E0"] = int(E0)
         params["sigma"] = float(sigma)
+    if model_choice == "SIRV":
+        params["V0"] = int(V0)
+        params["nu"] = float(vac_rate)
 
 ### --- Parameter Validation ---
 if params:
@@ -160,6 +177,12 @@ if params:
                 days=params["days"], dt=params["dt"]
             )
         elif model_choice == "SEIR":
+            validate_parameters(
+                N=params["N"], I0=params["I0"], R0=params["R0"],
+                beta=params["beta"], gamma=params["gamma"],
+                days=params["days"], dt=params["dt"]
+            )
+        elif model_choice == "SIRV":
             validate_parameters(
                 N=params["N"], I0=params["I0"], R0=params["R0"],
                 beta=params["beta"], gamma=params["gamma"],
@@ -190,7 +213,6 @@ if run_button and params:
                 metrics = get_epidemic_metrics(S, I, R)
                 fig = plot_sir(S, I, R, params["days"])
                 metrics_fig = plot_epidemic_metrics(metrics)
-                # Prepare DataFrame for download
                 result_df = pd.DataFrame({
                     "day": np.arange(len(S)),
                     "susceptible": S,
@@ -221,6 +243,31 @@ if run_button and params:
                     "exposed": res["E"],
                     "infected": res["I"],
                     "recovered": res["R"]
+                })
+            elif model_choice == "SIRV":
+                res = run_sirv_simulation(
+                    S0=params["N"] - params["I0"] - params["R0"] - params["V0"],
+                    I0=params["I0"],
+                    R0=params["R0"],
+                    V0=params["V0"],
+                    beta=params["beta"],
+                    gamma=params["gamma"],
+                    nu=params["nu"],
+                    N=params["N"],
+                    days=params["days"],
+                    dt=params["dt"],
+                    stochastic=stochastic,
+                    seed=seed
+                )
+                metrics = get_epidemic_metrics(res["S"], res["I"], res["R"])
+                fig = plot_sirv(res["S"], res["I"], res["R"], res["V"], params["days"])
+                metrics_fig = plot_epidemic_metrics(metrics)
+                result_df = pd.DataFrame({
+                    "day": np.arange(len(res["S"])),
+                    "susceptible": res["S"],
+                    "infected": res["I"],
+                    "recovered": res["R"],
+                    "vaccinated": res["V"]
                 })
             else:
                 st.error("Unknown model selected.")
@@ -287,4 +334,4 @@ st.markdown(
     </div>
     """,
     unsafe_allow_html=True
-        )
+            )
