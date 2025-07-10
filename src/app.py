@@ -77,45 +77,83 @@ input_mode = st.radio(
 )
 
 params = {}
-
-def parse_csv(uploaded_file):
-    try:
-        df = pd.read_csv(uploaded_file)
-        required_cols = {"susceptible", "infected", "recovered"}
-        if model_choice == "SEIR":
-            required_cols.add("exposed")
-        if model_choice == "SIRV":
-            required_cols.add("vaccinated")
-        if not required_cols.issubset(set(df.columns)):
-            st.error(f"CSV must contain columns: {', '.join(required_cols)}")
-            return None, None
-        N = int(df.iloc[0][list(required_cols)].sum())
-        days = len(df) - 1
-        # Prepare params for simulation
-        params = {
-            "N": N,
-            "S0": int(df["susceptible"][0]),
-            "I0": int(df["infected"][0]),
-            "R0": int(df["recovered"][0]),
-            "days": days,
-            "dt": 1.0
-        }
-        if model_choice == "SEIR":
-            params["E0"] = int(df["exposed"][0])
-        if model_choice == "SIRV":
-            params["V0"] = int(df["vaccinated"][0])
-        return params, df
-    except Exception as e:
-        st.error(f"Failed to parse CSV: {e}")
-        return None, None
-
 uploaded_df = None
+
 if input_mode == "Upload CSV":
     uploaded_file = st.file_uploader("Upload outbreak CSV", type=["csv"])
+    initial_pop = {}
+    df = None
     if uploaded_file:
-        params, uploaded_df = parse_csv(uploaded_file)
-        if params:
+        try:
+            df = pd.read_csv(uploaded_file)
+            # Get initial values from the first row
+            initial_pop["susceptible"] = int(df["susceptible"].iloc[0]) if "susceptible" in df.columns else 0
+            initial_pop["infected"] = int(df["infected"].iloc[0]) if "infected" in df.columns else 0
+            initial_pop["recovered"] = int(df["recovered"].iloc[0]) if "recovered" in df.columns else 0
+            if "exposed" in df.columns:
+                initial_pop["exposed"] = int(df["exposed"].iloc[0])
+            if "vaccinated" in df.columns:
+                initial_pop["vaccinated"] = int(df["vaccinated"].iloc[0])
+            N = sum([v for k, v in initial_pop.items()])
             st.success("CSV imported successfully. Params auto-filled below.")
+        except Exception as e:
+            st.error(f"Failed to parse CSV: {e}")
+            df = None
+            N = DEFAULTS["N"]
+            initial_pop = {}
+    if uploaded_file and df is not None:
+        # Show parameter input widgets with initial values from the CSV
+        st.markdown("#### Initial Population")
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            N = st.number_input("Total population (N)", min_value=1, max_value=100_000_000, value=N, step=100)
+        with col2:
+            I0 = st.number_input("Initially infected (I₀)", min_value=0, max_value=N, value=initial_pop.get("infected", 0))
+        with col3:
+            R0 = st.number_input("Initially recovered (R₀)", min_value=0, max_value=N, value=initial_pop.get("recovered", 0))
+        if model_choice == "SEIR":
+            with col4:
+                E0 = st.number_input("Initially exposed (E₀)", min_value=0, max_value=N, value=initial_pop.get("exposed", 0))
+            V0 = 0
+        elif model_choice == "SIRV":
+            with col4:
+                V0 = st.number_input("Initially vaccinated (V₀)", min_value=0, max_value=N, value=initial_pop.get("vaccinated", 0))
+            E0 = 0
+        else:
+            E0 = 0
+            V0 = 0
+
+        st.markdown("#### Model Parameters")
+        col5, col6, col7, col8 = st.columns(4)
+        with col5:
+            beta = st.number_input("Infection rate (β)", min_value=0.0, max_value=2.0, value=DEFAULTS["beta"], step=0.01)
+        if model_choice == "SEIR":
+            with col6:
+                sigma = st.number_input("Incubation rate (σ)", min_value=0.0, max_value=2.0, value=DEFAULTS.get("sigma", 0.2), step=0.01)
+        else:
+            sigma = None
+        with col7:
+            gamma = st.number_input("Recovery rate (γ)", min_value=0.0, max_value=2.0, value=DEFAULTS["gamma"], step=0.01)
+        with col8:
+            days = st.number_input("Simulation days", min_value=1, max_value=1000, value=len(df))
+        if model_choice == "SIRV":
+            vac_rate = st.number_input("Vaccination rate (ν)", min_value=0.0, max_value=1.0, value=0.0, step=0.01)
+        else:
+            vac_rate = None
+
+        params = dict(
+            N=int(N), I0=int(I0), R0=int(R0), days=int(days),
+            beta=float(beta), gamma=float(gamma), dt=DEFAULTS["dt"]
+        )
+        if model_choice == "SEIR":
+            params["E0"] = int(E0)
+            params["sigma"] = float(sigma)
+        if model_choice == "SIRV":
+            params["V0"] = int(V0)
+            params["nu"] = float(vac_rate)
+        uploaded_df = df
+    else:
+        params = {}
 else:
     # Manual parameter input
     st.markdown("#### Initial Population")
@@ -334,4 +372,4 @@ st.markdown(
     </div>
     """,
     unsafe_allow_html=True
-            )
+    )
