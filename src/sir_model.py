@@ -6,6 +6,7 @@ Includes:
     - Classic SIR solver (Euler method)
     - Optional stochastic (random) SIR simulation
     - Optional stochastic SEIR simulation
+    - Advanced SIRV (Susceptible-Infected-Recovered-Vaccinated) model (deterministic and stochastic)
     - Support for additional compartments (e.g., SEIR, SIRS) via extension
     - Parameter validation and result packaging
 
@@ -138,6 +139,71 @@ def run_seir_simulation(
             break
     return {'S': S, 'E': E, 'I': I, 'R': R}
 
+def run_sirv_simulation(
+    S0: int, I0: int, R0: int, V0: int,
+    beta: float, gamma: float, nu: float,
+    N: int, days: int, dt: float = 1.0,
+    stochastic: bool = False,
+    seed: Optional[int] = None
+) -> Dict[str, List[float]]:
+    """
+    Run a SIRV (Susceptible-Infected-Recovered-Vaccinated) model simulation.
+    Parameters:
+        S0, I0, R0, V0: Initial counts of susceptible, infected, recovered, vaccinated
+        beta: Infection rate per contact per day
+        gamma: Recovery rate per day
+        nu: Vaccination rate (per susceptible per day)
+        N: Total population
+        days: Number of days to simulate
+        dt: Timestep (days)
+        stochastic: Whether to use a stochastic simulation (Gillespie-like)
+        seed: Optional random seed for reproducibility
+    Returns:
+        Dict with lists for S, I, R, V
+    """
+    steps = int(days / dt)
+    S, I, R, V = [S0], [I0], [R0], [V0]
+    if stochastic and seed is not None:
+        np.random.seed(seed)
+    for step in range(steps):
+        s, i, r, v = S[-1], I[-1], R[-1], V[-1]
+        if stochastic:
+            # Probability calculations
+            p_inf = 1 - np.exp(-beta * i / N * dt) if N > 0 else 0
+            p_vac = 1 - np.exp(-nu * dt)
+            p_rec = 1 - np.exp(-gamma * dt)
+            new_infected = np.random.binomial(int(s), p_inf)
+            new_vaccinated = np.random.binomial(int(s - new_infected), p_vac) if (s - new_infected) > 0 else 0
+            new_recovered = np.random.binomial(int(i), p_rec)
+        else:
+            new_infected = beta * s * i / N * dt
+            new_vaccinated = nu * s * dt
+            new_recovered = gamma * i * dt
+
+        # Update compartments
+        s_new = max(s - new_infected - new_vaccinated, 0)
+        i_new = max(i + new_infected - new_recovered, 0)
+        r_new = min(r + new_recovered, N)
+        v_new = min(v + new_vaccinated, N)
+
+        # Ensure population is conserved
+        if s_new + i_new + r_new + v_new > N:
+            excess = s_new + i_new + r_new + v_new - N
+            v_new -= excess
+
+        S.append(s_new)
+        I.append(i_new)
+        R.append(r_new)
+        V.append(v_new)
+        if i_new < 1e-6:
+            # Epidemic ended
+            S += [s_new]*(steps-step-1)
+            I += [0]*(steps-step-1)
+            R += [r_new]*(steps-step-1)
+            V += [v_new]*(steps-step-1)
+            break
+    return {'S': S, 'I': I, 'R': R, 'V': V}
+
 def get_epidemic_metrics(S: List[float], I: List[float], R: List[float], dt: float = 1.0) -> Dict[str, float]:
     """
     Compute summary statistics for an SIR epidemic curve.
@@ -156,4 +222,4 @@ def get_epidemic_metrics(S: List[float], I: List[float], R: List[float], dt: flo
         peak_day=peak_day,
         total_infected=total_infected,
         duration=duration
-        )
+)
