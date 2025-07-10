@@ -1,13 +1,13 @@
 # 🦠 OutbreakLab
 
-**OutbreakLab** is an interactive, modern web application for simulating, analyzing, and visualizing infectious disease outbreaks using compartmental models like SIR and SEIR. Designed for education, research, and rapid scenario analysis, OutbreakLab features an appealing UI, flexible input (manual or CSV), stochastic and deterministic modeling, and rich visualizations.
+**OutbreakLab** is an interactive, modern web application for simulating, analyzing, and visualizing infectious disease outbreaks using compartmental models like SIR, SEIR, and SIRV. Designed for education, research, and rapid scenario analysis, OutbreakLab features an appealing UI, flexible input (manual or CSV), stochastic and deterministic modeling, and rich visualizations.
 
 ---
 
 ## 🚀 Features
 
-- **Model Selection:** SIR and SEIR (extensible for more)
-- **Interactive Parameters:** Adjust population, rates, and durations on the fly
+- **Model Selection:** SIR, SEIR, and SIRV (extensible for more)
+- **Interactive Parameters:** Adjust population, rates, durations, and vaccination on the fly
 - **CSV Upload:** Start simulations from real or custom data
 - **Stochastic & Deterministic Modes:** Compare epidemic randomness vs. average trends
 - **Visualization:** Beautiful, modern plots and summary metric dashboards
@@ -23,8 +23,8 @@
 See [`ARCHITECTURE.md`](ARCHITECTURE.md) for a detailed overview.  
 Main components:
 - `src/app.py`: Streamlit app entry point and UI logic
-- `src/sir_model.py`: SIR/SEIR simulation engines
-- `src/visualization.py`: Plotting & metric visualization
+- `src/sir_model.py`: SIR/SEIR/SIRV simulation engines
+- `src/visualization.py`: Plotting & metric visualization (supports SIR, SEIR, SIRV)
 - `src/utils.py`: Validation, conversion, helpers
 - `src/config.py`: App defaults and metadata
 - `assets/`: Custom CSS, example data
@@ -50,6 +50,9 @@ streamlit run src/app.py
 ### 3. Open in Your Browser
 
 Streamlit will open a local server, usually at [http://localhost:8501](http://localhost:8501).
+
+Or try the live app:  
+**🌐 [OutbreakLab Demo (on Render)](https://outbreaklab.onrender.com/)**
 
 ---
 
@@ -119,6 +122,7 @@ Open an issue or PR for features, models, bugfixes, or improvements.
 - [GitHub](https://github.com/A-P-U-R-B-O/OutbreakLab)
 - Example data: [`assets/example_data.csv`](assets/example_data.csv)
 - Architecture: [`ARCHITECTURE.md`](ARCHITECTURE.md)
+- **Live App:** [https://outbreaklab.onrender.com/](https://outbreaklab.onrender.com/)
 
 ---
 
