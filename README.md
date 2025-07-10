@@ -52,7 +52,7 @@ streamlit run src/app.py
 Streamlit will open a local server, usually at [http://localhost:8501](http://localhost:8501).
 
 Or try the live app:  
-**🌐 [OutbreakLab Demo (on Render)](https://outbreaklab.onrender.com/)**
+**🌐 [OutbreakLab Demo](https://outbreaklab.streamlit.app/)**
 
 ---
 
@@ -122,7 +122,7 @@ Open an issue or PR for features, models, bugfixes, or improvements.
 - [GitHub](https://github.com/A-P-U-R-B-O/OutbreakLab)
 - Example data: [`assets/example_data.csv`](assets/example_data.csv)
 - Architecture: [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- **Live App:** [https://outbreaklab.onrender.com/](https://outbreaklab.onrender.com/)
+- **Live App:** [https://outbreaklab.onrender.com/](https://outbreaklab.streamlit.app/)
 
 ---
 
