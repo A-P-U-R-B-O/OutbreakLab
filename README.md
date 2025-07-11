@@ -24,7 +24,7 @@ See [`ARCHITECTURE.md`](ARCHITECTURE.md) for a detailed overview.
 Main components:
 - `src/app.py`: Streamlit app entry point and UI logic
 - `src/sir_model.py`: SIR/SEIR/SIRV simulation engines
-- `src/visualization.py`: Plotting & metric visualization (supports SIR, SEIR, SIRV)
+- `src/visualization.py`: Plotting & metric visualization (supports SIR, SEIR, SIRV, SEIRV)
 - `src/utils.py`: Validation, conversion, helpers
 - `src/config.py`: App defaults and metadata
 - `assets/`: Custom CSS, example data
