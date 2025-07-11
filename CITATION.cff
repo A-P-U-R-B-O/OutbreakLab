@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "OutbreakLab"
+version: "v1.0.0"
+doi: 10.5281/zenodo.15862662
+authors:
+  - family-names: "Apurbo"
+    given-names: "Tamzid Ahmed"
+    orcid: "https://orcid.org/0009-0002-2518-0928"
+    affiliation: "Independent Researcher"
+date-released: 2025-07-11
+url: "https://github.com/A-P-U-R-B-O/OutbreakLab"
+license: "MIT"
