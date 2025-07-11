@@ -79,12 +79,12 @@ a:hover {
 
 /* Custom card-like container for main panels */
 .outbreaklab-card {
-    background: #ffffffcc;
+    background: #EDE7F6;
     border-radius: 18px;
     box-shadow: 0 6px 32px #B39DDB22;
     padding: 2em 2em 2em 2em;
     margin-bottom: 2em;
-    border: 1.5px solid #E6E6FA;
+    border: 1.5px solid #B39DDB;
     transition: box-shadow 0.2s;
 }
 .outbreaklab-card:hover {
