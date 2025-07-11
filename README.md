@@ -6,7 +6,7 @@
 
 ## 🚀 Features
 
-- **Model Selection:** SIR, SEIR, and SIRV (extensible for more)
+- **Model Selection:** SIR, SEIR, SIRV and SEIRV (extensible for more)
 - **Interactive Parameters:** Adjust population, rates, durations, and vaccination on the fly
 - **CSV Upload:** Start simulations from real or custom data
 - **Stochastic & Deterministic Modes:** Compare epidemic randomness vs. average trends
