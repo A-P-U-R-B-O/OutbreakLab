@@ -7,6 +7,8 @@ tags:
   - Python
   - SEIR
   - SIR
+  - SIRV
+  - SEIRV
 authors:
   - name: Tamzid Ahmed Apurbo
     orcid: 0009-0002-2518-0928
@@ -20,7 +22,7 @@ bibliography: paper.bib
 
 ## Summary
 
-OutbreakLab is a modern, interactive web application designed to simulate, analyze, and visualize infectious disease outbreaks using compartmental models such as SIR and SEIR. Developed in Python with Streamlit, it targets educators, researchers, and students seeking an accessible tool for understanding epidemic dynamics and exploring intervention strategies.
+OutbreakLab is a modern, interactive web application designed to simulate, analyze, and visualize infectious disease outbreaks using compartmental models such as SIR, SEIR, SIRV and SEIRV. Developed in Python with Streamlit, it targets educators, researchers, and students seeking an accessible tool for understanding epidemic dynamics and exploring intervention strategies.
 
 ## Statement of Need
 
@@ -36,7 +38,7 @@ OutbreakLab makes epidemic modeling accessible and interactive for the broader s
 
 ## Features
 
-- **Model Selection**: SIR and SEIR, with an extensible framework for more models  
+- **Model Selection**: SIR,SEIR, SIRV, SEIRV with an extensible framework for more models  
 - **Interactive Parameters**: Adjust population size, infection/recovery rates, and other model parameters live  
 - **Stochastic & Deterministic Modes**: Explore variability in outbreak outcomes  
 - **Data Upload**: Initialize simulations with custom or empirical data via CSV  
@@ -50,7 +52,7 @@ OutbreakLab makes epidemic modeling accessible and interactive for the broader s
 OutbreakLab’s architecture is modular and well-documented:
 
 - **Web Application**: Built with Streamlit for rapid UI development and deployment  
-- **Simulation Engines**: SIR/SEIR models implemented in Python, supporting both deterministic and random processes  
+- **Simulation Engines**: SIR/SEIR/SIRV/SEIRV models implemented in Python, supporting both deterministic and random processes  
 - **Visualization**: Uses Matplotlib for plotting, integrated into the Streamlit dashboard  
 - **Utilities**: Data validation, conversion, and configuration modules facilitate reliable and extensible code  
 - **Testing**: Comprehensive unit tests ensure correctness and maintainability  
