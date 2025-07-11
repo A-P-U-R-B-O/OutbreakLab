@@ -6,7 +6,7 @@ Tamzid Ahmed Apurbo
 ORCiD ID : 0009-0002-2518-0928
 
 **Date: 11/07/2025**
-**bibliography:paper.bib**
+**bibliography: paper.bib**
 
 ## Summary
 
