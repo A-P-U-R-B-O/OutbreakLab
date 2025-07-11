@@ -5,6 +5,9 @@ Tamzid Ahmed Apurbo
 
 ORCiD ID : 0009-0002-2518-0928
 
+**Date: 11/07/2025**
+**bibliography:paper.bib**
+
 ## Summary
 
 OutbreakLab is a modern, interactive web application designed to simulate, analyze, and visualize infectious disease outbreaks using compartmental models such as SIR and SEIR. Developed in Python with Streamlit, it targets educators, researchers, and students seeking an accessible tool for understanding epidemic dynamics and exploring intervention strategies.
