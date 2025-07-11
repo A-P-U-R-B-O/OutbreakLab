@@ -63,3 +63,32 @@ OutbreakLab’s architecture is modular and well-documented:
 git clone https://github.com/A-P-U-R-B-O/OutbreakLab.git
 cd OutbreakLab
 pip install -r requirements.txt
+```
+
+## Running the Application
+
+```bash
+streamlit run src/app.py
+```
+
+Then open `http://localhost:8501` in your web browser.
+
+## Example Data
+
+An example CSV file (`assets/example_data.csv`) is provided for demonstration and as a template for user data.
+
+## Extensibility
+
+- **Adding Models**: Extend `src/sir_model.py` and update the UI in `src/app.py`  
+- **Styling**: Customize via `assets/custom.css`  
+- **Metrics & Plots**: Modify or add new visualizations in `src/visualization.py`  
+
+## Quality Assurance
+
+- Unit tests are provided for core logic in the `tests/` directory  
+- Continuous integration is supported via `pytest`  
+
+## References
+
+The code for OutbreakLab is openly available and archived on Zenodo [@apurbo_outbreaklab_2025].  
+This work builds upon foundational epidemic modeling frameworks introduced by [@kermack1927contribution].
