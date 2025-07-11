@@ -1,7 +1,8 @@
 # OutbreakLab: An Interactive Platform for Infectious Disease Outbreak Simulation and Visualization
 
 **Authors:**  
-A-P-U-R-B-O
+Tamzid Ahmed Apurbo 
+ORCiD ID : 0009-0002-2518-0928
 
 ## Summary
 
