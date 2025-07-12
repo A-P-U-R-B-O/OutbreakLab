@@ -23,6 +23,6 @@ DEFAULTS = {
 APP_TITLE = "OutbreakLab"
 APP_DESCRIPTION = (
     "OutbreakLab is an interactive web app for simulating and visualizing "
-    "infectious disease outbreaks using compartmental models such as SIR and SEIR."
+    "infectious disease outbreaks using compartmental models such as SIR, SEIR, SIRV, SEIRV and SEIRD."
 )
 APP_ICON = ":microbe:"
