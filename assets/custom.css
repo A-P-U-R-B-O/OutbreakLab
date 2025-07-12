@@ -32,7 +32,7 @@ h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
     box-shadow: 0 4px 18px #7E57C277;
 }
 
-/* Download button (added for visibility) */
+/* Download button (fixed for visibility) */
 .stDownloadButton > button {
     background: linear-gradient(90deg, #9575CD 0%, #7E57C2 100%) !important;
     color: #fff !important;
@@ -74,34 +74,46 @@ h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
     border-radius: 7px !important;
     border: 1.5px solid #B39DDB !important;
     background: #990000 !important;
+    color: #fff !important;
 }
 
-/* Alerts, warnings, etc */
+/* Alerts, warnings, info, etc. */
 .stAlert, .stError, .stWarning, .stInfo, .stSuccess {
     border-radius: 10px;
     border-left: 5px solid #7E57C2;
-    background: #F3EFFF;
-    color: #512E7E;
+    background: #F3EFFF !important;
+    color: #512E7E !important;
 }
 
-hr {
-    border: none;
-    border-top: 2px solid #B39DDB;
-    margin: 2em 0;
+/* Stronger selector for sidebar info box (fix for dark mode) */
+section[data-testid="stSidebar"] .stInfo {
+    background: #F3EFFF !important;
+    color: #512E7E !important;
 }
 
-/* Links */
-a {
-    color: #7E57C2;
-    text-decoration: none;
-    transition: color 0.15s;
-}
-a:hover {
-    color: #9575CD;
-    text-decoration: underline;
+/* Sidebar background fix for dark mode (optional, tweak as you like) */
+section[data-testid="stSidebar"] {
+    background: #262730 !important;
 }
 
-/* Custom card-like container for main panels */
+/* Improve contrast of sidebar text if needed */
+section[data-testid="stSidebar"] * {
+    color: #fff;
+}
+section[data-testid="stSidebar"] .stInfo,
+section[data-testid="stSidebar"] .stAlert,
+section[data-testid="stSidebar"] .stError,
+section[data-testid="stSidebar"] .stWarning,
+section[data-testid="stSidebar"] .stSuccess {
+    color: #512E7E !important;
+}
+
+/* Checkbox and label color in sidebar for visibility */
+section[data-testid="stSidebar"] .stCheckbox > label {
+    color: #fff !important;
+}
+
+/* Style for the custom card-like main panels */
 .outbreaklab-card {
     background: #EDE7F6;
     border-radius: 18px;
@@ -145,6 +157,24 @@ img, .element-container img {
     background: #F5F3FA;
 }
 
+/* Links */
+a {
+    color: #7E57C2;
+    text-decoration: none;
+    transition: color 0.15s;
+}
+a:hover {
+    color: #9575CD;
+    text-decoration: underline;
+}
+
+/* Horizontal rule */
+hr {
+    border: none;
+    border-top: 2px solid #B39DDB;
+    margin: 2em 0;
+}
+
 /* Responsive paddings */
 @media (max-width: 600px) {
     .outbreaklab-card {
@@ -153,4 +183,4 @@ img, .element-container img {
     h1, h2, h3 {
         font-size: 1.1em !important;
     }
-}
+        }
