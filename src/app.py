@@ -12,6 +12,7 @@ from sir_model import (
     run_seir_simulation, 
     run_sirv_simulation, 
     run_seirv_simulation, 
+    run_seird_simulation,    # <-- NEW
     get_epidemic_metrics
 )
 from visualization import (
@@ -19,6 +20,7 @@ from visualization import (
     plot_seir, 
     plot_sirv, 
     plot_seirv,
+    plot_seird,             # <-- NEW
     plot_epidemic_metrics
 )
 from utils import validate_parameters, to_int, to_float
@@ -41,7 +43,7 @@ st.sidebar.info(APP_DESCRIPTION)
 
 model_choice = st.sidebar.selectbox(
     "Choose epidemic model",
-    ["SIR", "SEIR", "SIRV", "SEIRV"],
+    ["SIR", "SEIR", "SIRV", "SEIRV", "SEIRD"],  # <-- Added SEIRD
     help="Select which compartmental model to simulate."
 )
 
@@ -106,7 +108,9 @@ if input_mode == "Upload CSV":
                 initial_pop["exposed"] = int(df["exposed"].iloc[0])
             if "vaccinated" in df.columns:
                 initial_pop["vaccinated"] = int(df["vaccinated"].iloc[0])
-            N = sum([v for k, v in initial_pop.items()])
+            if "deceased" in df.columns:
+                initial_pop["deceased"] = int(df["deceased"].iloc[0])
+            N = sum([v for k, v in initial_pop.items() if k != "deceased"])
             st.success("CSV imported successfully. Params auto-filled below.")
         except Exception as e:
             st.error(f"Failed to parse CSV: {e}")
@@ -116,7 +120,7 @@ if input_mode == "Upload CSV":
     if uploaded_file and df is not None:
         # Show parameter input widgets with initial values from the CSV
         st.markdown("#### Initial Population")
-        col1, col2, col3, col4, col5 = st.columns(5)
+        col1, col2, col3, col4, col5, col6 = st.columns(6)
         with col1:
             N = st.number_input("Total population (N)", min_value=1, max_value=100_000_000, value=N, step=100)
         with col2:
@@ -124,7 +128,7 @@ if input_mode == "Upload CSV":
         with col3:
             R0 = st.number_input("Initially recovered (R₀)", min_value=0, max_value=N, value=initial_pop.get("recovered", 0))
         with col4:
-            if model_choice in ["SEIR", "SEIRV"]:
+            if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
                 E0 = st.number_input("Initially exposed (E₀)", min_value=0, max_value=N, value=initial_pop.get("exposed", 0))
             else:
                 E0 = 0
@@ -133,21 +137,31 @@ if input_mode == "Upload CSV":
                 V0 = st.number_input("Initially vaccinated (V₀)", min_value=0, max_value=N, value=initial_pop.get("vaccinated", 0))
             else:
                 V0 = 0
+        with col6:
+            if model_choice == "SEIRD":
+                D0 = st.number_input("Initially deceased (D₀)", min_value=0, max_value=100_000_000, value=initial_pop.get("deceased", 0))
+            else:
+                D0 = 0
 
         st.markdown("#### Model Parameters")
-        col6, col7, col8, col9, col10 = st.columns(5)
+        col6, col7, col8, col9, col10, col11 = st.columns(6)
         with col6:
             beta = st.number_input("Infection rate (β)", min_value=0.0, max_value=2.0, value=DEFAULTS["beta"], step=0.01)
         with col7:
-            if model_choice in ["SEIR", "SEIRV"]:
+            if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
                 sigma = st.number_input("Incubation rate (σ)", min_value=0.0, max_value=2.0, value=DEFAULTS.get("sigma", 0.2), step=0.01)
             else:
                 sigma = None
         with col8:
             gamma = st.number_input("Recovery rate (γ)", min_value=0.0, max_value=2.0, value=DEFAULTS["gamma"], step=0.01)
         with col9:
-            days = st.number_input("Simulation days", min_value=1, max_value=1000, value=len(df))
+            if model_choice == "SEIRD":
+                mu = st.number_input("Mortality rate (μ)", min_value=0.0, max_value=2.0, value=DEFAULTS.get("mu", 0.01), step=0.01)
+            else:
+                mu = None
         with col10:
+            days = st.number_input("Simulation days", min_value=1, max_value=1000, value=len(df))
+        with col11:
             if model_choice in ["SIRV", "SEIRV"]:
                 vac_rate = st.number_input("Vaccination rate (ν)", min_value=0.0, max_value=1.0, value=0.0, step=0.01)
             else:
@@ -157,19 +171,22 @@ if input_mode == "Upload CSV":
             N=int(N), I0=int(I0), R0=int(R0), days=int(days),
             beta=float(beta), gamma=float(gamma), dt=DEFAULTS["dt"]
         )
-        if model_choice in ["SEIR", "SEIRV"]:
+        if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
             params["E0"] = int(E0)
             params["sigma"] = float(sigma)
         if model_choice in ["SIRV", "SEIRV"]:
             params["V0"] = int(V0)
             params["nu"] = float(vac_rate)
+        if model_choice == "SEIRD":
+            params["D0"] = int(D0)
+            params["mu"] = float(mu)
         uploaded_df = df
     else:
         params = {}
 else:
     # Manual parameter input
     st.markdown("#### Initial Population")
-    col1, col2, col3, col4, col5 = st.columns(5)
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
     with col1:
         N = st.number_input("Total population (N)", min_value=1, max_value=100_000_000, value=DEFAULTS["N"], step=100)
     with col2:
@@ -177,7 +194,7 @@ else:
     with col3:
         R0 = st.number_input("Initially recovered (R₀)", min_value=0, max_value=N, value=DEFAULTS["R0"])
     with col4:
-        if model_choice in ["SEIR", "SEIRV"]:
+        if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
             E0 = st.number_input("Initially exposed (E₀)", min_value=0, max_value=N, value=DEFAULTS.get("E0", 0))
         else:
             E0 = 0
@@ -186,21 +203,31 @@ else:
             V0 = st.number_input("Initially vaccinated (V₀)", min_value=0, max_value=N, value=0)
         else:
             V0 = 0
+    with col6:
+        if model_choice == "SEIRD":
+            D0 = st.number_input("Initially deceased (D₀)", min_value=0, max_value=100_000_000, value=DEFAULTS.get("D0", 0))
+        else:
+            D0 = 0
 
     st.markdown("#### Model Parameters")
-    col6, col7, col8, col9, col10 = st.columns(5)
+    col6, col7, col8, col9, col10, col11 = st.columns(6)
     with col6:
         beta = st.number_input("Infection rate (β)", min_value=0.0, max_value=2.0, value=DEFAULTS["beta"], step=0.01)
     with col7:
-        if model_choice in ["SEIR", "SEIRV"]:
+        if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
             sigma = st.number_input("Incubation rate (σ)", min_value=0.0, max_value=2.0, value=DEFAULTS.get("sigma", 0.2), step=0.01)
         else:
             sigma = None
     with col8:
         gamma = st.number_input("Recovery rate (γ)", min_value=0.0, max_value=2.0, value=DEFAULTS["gamma"], step=0.01)
     with col9:
-        days = st.number_input("Simulation days", min_value=1, max_value=1000, value=DEFAULTS["days"])
+        if model_choice == "SEIRD":
+            mu = st.number_input("Mortality rate (μ)", min_value=0.0, max_value=2.0, value=DEFAULTS.get("mu", 0.01), step=0.01)
+        else:
+            mu = None
     with col10:
+        days = st.number_input("Simulation days", min_value=1, max_value=1000, value=DEFAULTS["days"])
+    with col11:
         if model_choice in ["SIRV", "SEIRV"]:
             vac_rate = st.number_input("Vaccination rate (ν)", min_value=0.0, max_value=1.0, value=0.0, step=0.01)
         else:
@@ -210,12 +237,15 @@ else:
         N=int(N), I0=int(I0), R0=int(R0), days=int(days),
         beta=float(beta), gamma=float(gamma), dt=DEFAULTS["dt"]
     )
-    if model_choice in ["SEIR", "SEIRV"]:
+    if model_choice in ["SEIR", "SEIRV", "SEIRD"]:
         params["E0"] = int(E0)
         params["sigma"] = float(sigma)
     if model_choice in ["SIRV", "SEIRV"]:
         params["V0"] = int(V0)
         params["nu"] = float(vac_rate)
+    if model_choice == "SEIRD":
+        params["D0"] = int(D0)
+        params["mu"] = float(mu)
 
 ### --- Parameter Validation ---
 if params:
@@ -334,6 +364,35 @@ if run_button and params:
                     "recovered": res["R"],
                     "vaccinated": res["V"]
                 })
+            elif model_choice == "SEIRD":
+                res = run_seird_simulation(
+                    S0=params["N"] - params["E0"] - params["I0"] - params["R0"],
+                    E0=params["E0"],
+                    I0=params["I0"],
+                    R0=params["R0"],
+                    D0=params["D0"],
+                    beta=params["beta"],
+                    sigma=params["sigma"],
+                    gamma=params["gamma"],
+                    mu=params["mu"],
+                    N=params["N"],
+                    days=params["days"],
+                    dt=params["dt"],
+                    stochastic=stochastic,
+                    seed=seed
+                )
+                # Note: For SEIRD, you may want a custom metrics function for D as well
+                metrics = get_epidemic_metrics(res["S"], res["I"], res["R"])
+                fig = plot_seird(res["S"], res["E"], res["I"], res["R"], res["D"], params["days"])
+                metrics_fig = plot_epidemic_metrics(metrics)
+                result_df = pd.DataFrame({
+                    "day": np.arange(len(res["S"])),
+                    "susceptible": res["S"],
+                    "exposed": res["E"],
+                    "infected": res["I"],
+                    "recovered": res["R"],
+                    "deceased": res["D"]
+                })
             else:
                 st.error("Unknown model selected.")
                 st.stop()
@@ -399,4 +458,4 @@ st.markdown(
     </div>
     """,
     unsafe_allow_html=True
-)
+            )
