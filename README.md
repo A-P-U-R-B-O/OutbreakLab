@@ -1,12 +1,12 @@
 # 🦠 OutbreakLab
 
-**OutbreakLab** is an interactive, modern web application for simulating, analyzing, and visualizing infectious disease outbreaks using compartmental models like SIR, SEIR, and SIRV. Designed for education, research, and rapid scenario analysis, OutbreakLab features an appealing UI, flexible input (manual or CSV), stochastic and deterministic modeling, and rich visualizations.
+**OutbreakLab** is an interactive, modern web application for simulating, analyzing, and visualizing infectious disease outbreaks using compartmental models like SIR, SEIR, SIRV and SEIRD. Designed for education, research, and rapid scenario analysis, OutbreakLab features an appealing UI, flexible input (manual or CSV), stochastic and deterministic modeling, and rich visualizations.
 
 ---
 
 ## 🚀 Features
 
-- **Model Selection:** SIR, SEIR, SIRV and SEIRV (extensible for more)
+- **Model Selection:** SIR, SEIR, SIRV, SEIRV and SEIRD (extensible for more)
 - **Interactive Parameters:** Adjust population, rates, durations, and vaccination on the fly
 - **CSV Upload:** Start simulations from real or custom data
 - **Stochastic & Deterministic Modes:** Compare epidemic randomness vs. average trends
@@ -24,7 +24,7 @@ See [`ARCHITECTURE.md`](ARCHITECTURE.md) for a detailed overview.
 Main components:
 - `src/app.py`: Streamlit app entry point and UI logic
 - `src/sir_model.py`: SIR/SEIR/SIRV simulation engines
-- `src/visualization.py`: Plotting & metric visualization (supports SIR, SEIR, SIRV, SEIRV)
+- `src/visualization.py`: Plotting & metric visualization (supports SIR, SEIR, SIRV, SEIRV, SEIRD)
 - `src/utils.py`: Validation, conversion, helpers
 - `src/config.py`: App defaults and metadata
 - `assets/`: Custom CSS, example data
