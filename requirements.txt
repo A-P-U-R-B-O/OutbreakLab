@@ -1,6 +1,5 @@
-streamlit
+numpy==1.26.4
 matplotlib
-numpy
 pytest
-# Optional: for additional features/extensions
+streamlit
 pandas
