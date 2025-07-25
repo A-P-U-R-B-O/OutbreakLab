@@ -21,14 +21,10 @@ jobs:
     - name: Clear pip cache
       run: rm -rf ~/.cache/pip
 
-    - name: Upgrade pip and force reinstall numpy & matplotlib with pinned numpy version
+    - name: Upgrade pip and install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip uninstall -y numpy matplotlib || true
-        pip install numpy==1.26.4 matplotlib
-
-    - name: Install remaining dependencies
-      run: pip install -r requirements.txt
+        pip install -r requirements.txt
 
     - name: Debug numpy installation
       run: |
