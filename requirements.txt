@@ -2,3 +2,4 @@ matplotlib
 pytest
 streamlit
 pandas
+numpy
